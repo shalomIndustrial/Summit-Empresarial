@@ -46,7 +46,7 @@
                 <a href="#agenda" class="hover:text-brandGoldHover transition">Agenda</a>
                 <a href="#Inicia-sesion" class="hover:text-brandGoldHover transition">inicia sesión</a>
             </div>
-            <a href="#registro" class="bg-brandGold text-brandNavy font-bold px-5 py-2 rounded shadow hover:bg-brandGoldHover transition text-sm">
+            <a href="menu.html" class="bg-brandGold text-brandNavy font-bold px-5 py-2 rounded shadow hover:bg-brandGoldHover transition text-sm">
                 Compra tus boletos aqui!
             </a>
         </div>
@@ -200,68 +200,26 @@
     </section>
 
     <!-- Registro y Pago -->
-    <section id="registro" class="py-20 px-6 max-w-2xl mx-auto">
-        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-xl border border-gray-100">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-brandNavy font-serif-title">Registro de Asistencia</h2>
-                <p class="text-gray-500 text-sm mt-1">Cuota de recuperación sin fines de lucro.</p>
+    <section id="registro" class="py-20 px-6 max-w-3xl mx-auto">
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-gray-100 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-brandNavy font-serif-title">Registro de Asistencia</h2>
+            <p class="text-gray-500 text-sm mt-1">Cuota de recuperación sin fines de lucro.</p>
+
+            <div class="flex justify-center items-baseline gap-2 mt-8">
+                <span class="text-4xl md:text-5xl font-bold text-brandNavy">$500</span>
+                <span class="text-gray-500 font-medium">MXN · Acceso Completo</span>
             </div>
 
-            <form onsubmit="procesarPago(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Nombre(s)</label>
-                    <input type="text" required placeholder="Ej. Juan Arnol" class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Apellido Paterno</label>
-                    <input type="text" required placeholder="Ej. Gonzalez" class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Apellido Materno</label>
-                    <input type="text" required placeholder="Ej. Pérez" class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Correo Electrónico</label>
-                    <input type="email" required placeholder="tu@empresa.com" class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Perfil</label>
-                    <select class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
-                        <option>Joven Emprendedor / Estudiante</option>
-                        <option>Empresario / Fundador</option>
-                        <option>Consultor / Mentor</option>
-                    </select>
-                </div>
+            <ul class="text-sm text-gray-600 mt-6 space-y-2 text-left max-w-sm mx-auto">
+                <li class="flex items-start gap-2"><span class="text-brandGold mt-0.5">•</span> Ponencias magistrales y paneles</li>
+                <li class="flex items-start gap-2"><span class="text-brandGold mt-0.5">•</span> Talleres prácticos de formación empresarial</li>
+                <li class="flex items-start gap-2"><span class="text-brandGold mt-0.5">•</span> Consultoría empresarial y mentoría 1 a 1</li>
+                <li class="flex items-start gap-2"><span class="text-brandGold mt-0.5">•</span> Coffee break de bienvenida</li>
+            </ul>
 
-                <div class="pt-6 border-t border-gray-100 mt-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="font-bold text-gray-700">Acceso Completo:</span>
-                        <span class="text-2xl font-bold text-brandNavy">$500 MXN</span>
-                    </div>
-
-                    <!-- Simulación Pasarela Stripe -->
-                    <div class="p-4 border rounded bg-gray-50 mb-6 space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-gray-400 uppercase">Tarjeta de Débito/Crédito</span>
-                            <span class="text-xs text-brandNavy font-bold">Stripe Secure</span>
-                        </div>
-                        <input type="text" placeholder="4242 •••• •••• 4242" class="w-full px-3 py-2 border rounded text-sm bg-white outline-none">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="text" placeholder="MM/AA" class="px-3 py-2 border rounded text-sm bg-white outline-none">
-                            <input type="text" placeholder="CVC" class="px-3 py-2 border rounded text-sm bg-white outline-none">
-                        </div>
-                    </div>
-
-                    <button type="submit" id="btn-pago" class="w-full bg-brandNavy text-white font-bold py-3.5 rounded shadow hover:bg-brandNavyDark transition flex justify-center items-center gap-2">
-                        <span>Pagar Registro</span>
-                    </button>
-                </div>
-            </form>
-
-            <div id="exito" class="hidden text-center mt-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
-                <p class="font-bold">¡Registro Exitoso!</p>
-                <p class="text-sm">Te hemos enviado el boleto de acceso a tu correo electrónico.</p>
-            </div>
+            <a href="menu.html" class="inline-block mt-8 bg-brandNavy text-white font-bold px-8 py-3.5 rounded shadow hover:bg-brandNavyDark transition">
+                Comprar boletos en línea
+            </a>
         </div>
     </section>
 
@@ -279,34 +237,26 @@
             <p class="text-xs text-gray-500 mt-2">
                 Formación, innovación y liderazgo para la nueva generación empresarial de México.
             </p>
+<!-- Firma del CEO -->
+<div class="pt-6 mt-6 border-t border-white/10 max-w-xs mx-auto">
+    <img 
+        src="sama2.png" 
+        alt="Firma CEO" 
+        class="h-16 mx-auto opacity-90 object-contain"
+    >
 
-            <!-- Firma del CEO -->
-            <div class="pt-6 mt-6 border-t border-white/10 max-w-xs mx-auto">
-                <img src="firma-ceo.jpeg" alt="Firma CEO" class="h-16 mx-auto invert opacity-90 object-contain">
-                <p class="text-xs font-bold tracking-wider text-brandGold mt-2">
-                    CEO ANTONIO SAMAEL RINCÓN SANTIAGO SEGUNDO
-                </p>
-                <p class="text-[10px] text-gray-500 uppercase">Summit Empresarial México</p>
-            </div>
+    <p class="text-xs font-bold tracking-wider text-brandGold mt-2">
+        CEO ANTONIO SAMAEL RINCÓN SANTIAGO SEGUNDO
+    </p>
+
+    <p class="text-[10px] text-gray-500 uppercase">
+        Summit Empresarial México
+    </p>
+</div>
 
         </div>
     </footer>
 
-    <script>
-        function procesarPago(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-pago');
-            const exito = document.getElementById('exito');
-
-            btn.disabled = true;
-            btn.innerHTML = 'Procesando...';
-
-            setTimeout(() => {
-                btn.classList.add('hidden');
-                exito.classList.remove('hidden');
-            }, 1500);
-        }
-    </script>
 </body>
 
 </html>
