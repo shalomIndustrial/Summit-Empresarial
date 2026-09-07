@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Empresarial México 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandNavy: '#0A1931',
+                        brandNavyDark: '#050C1A',
+                        brandGold: '#C5A059',
+                        brandGoldHover: '#B28E46',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-serif-title {
+            font-family: 'Cinzel', serif;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- Navegación -->
+    <nav class="bg-brandNavy text-white sticky top-0 z-50 border-b border-brandGold/30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="summit.PNG" alt="Summit Empresarial México" class="h-10 w-auto object-contain">
+            </div>
+            <div class="space-x-8 hidden md:flex font-medium text-sm">
+                <a href="#inicio" class="hover:text-brandGold transition">Inicio</a>
+                <a href="#que-hacemos" class="hover:text-brandGold transition">Lo que hacemos</a>
+                <a href="#aliados" class="hover:text-brandGold transition">Aliados</a>
+                <a href="#registro" class="hover:text-brandGold transition">Registro</a>
+            </div>
+            <a href="#registro" class="bg-brandGold text-brandNavy font-bold px-5 py-2 rounded shadow hover:bg-brandGoldHover transition text-sm">
+                Asegurar Lugar
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero / Encabezado Principal -->
+    <section id="inicio" class="bg-brandNavy text-white relative overflow-hidden py-20 px-6 border-b border-brandGold/20">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <!-- Logo principal flotante -->
+            <img src="IMG_7661.PNG" alt="Summit Empresarial México Logo" class="h-28 md:h-36 mx-auto mb-8 drop-shadow-md">
+
+            <span class="inline-block bg-brandGold/20 text-brandGold border border-brandGold/40 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+                Organización Sin Fines de Lucro
+            </span>
+
+            <!-- Banner / Imagen del lema integrado -->
+            <div class="my-6 max-w-3xl mx-auto bg-white/5 p-6 rounded-2xl border border-brandGold/30 backdrop-blur-sm shadow-xl">
+                <img src="IMG_8617.PNG" alt="El encuentro de la nueva generación empresarial más importante de México" class="w-full h-auto rounded-lg mx-auto">
+            </div>
+
+            <p class="text-base md:text-xl text-gray-300 max-w-3xl mx-auto mt-6 leading-relaxed">
+                Impulsamos a jóvenes, emprendedores y empresarios con herramientas clave de formación para elevar sus modelos de negocio al siguiente nivel.
+            </p>
+
+            <div class="mt-8 flex justify-center gap-4">
+                <a href="#registro" class="bg-brandGold text-brandNavy px-8 py-3.5 rounded font-bold shadow-lg hover:bg-brandGoldHover transition">
+                    Obtener Boleto
+                </a>
+                <a href="#que-hacemos" class="border border-brandGold text-brandGold px-8 py-3.5 rounded font-semibold hover:bg-brandGold/10 transition">
+                    Conocer Programa
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Lo Que Hacemos -->
+    <section id="que-hacemos" class="py-20 max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-brandNavy font-serif-title">Formación Empresarial Integral</h2>
+            <div class="w-20 h-1 bg-brandGold mx-auto mt-3"></div>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Nuestra plataforma reúne todo lo necesario para fortalecer el ecosistema emprendedor del país.</p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-brandGold text-center hover:-translate-y-1 transition">
+                <div class="w-14 h-14 bg-brandNavy text-brandGold rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">🎤</div>
+                <h3 class="font-bold text-xl text-brandNavy mb-2">Ponencias</h3>
+                <p class="text-gray-600 text-sm">Conferencias con líderes de la industria y empresarios con trayectoria internacional.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-brandNavy text-center hover:-translate-y-1 transition">
+                <div class="w-14 h-14 bg-brandNavy text-brandGold rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">🛠️</div>
+                <h3 class="font-bold text-xl text-brandNavy mb-2">Talleres</h3>
+                <p class="text-gray-600 text-sm">Capacitación técnica y práctica orientada a resultados rápidos e implementables.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-brandGold text-center hover:-translate-y-1 transition">
+                <div class="w-14 h-14 bg-brandNavy text-brandGold rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">💼</div>
+                <h3 class="font-bold text-xl text-brandNavy mb-2">Consultoría</h3>
+                <p class="text-gray-600 text-sm">Diagnóstico estratégico especializado para startups y PyMEs en crecimiento.</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-brandNavy text-center hover:-translate-y-1 transition">
+                <div class="w-14 h-14 bg-brandNavy text-brandGold rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4">🤝</div>
+                <h3 class="font-bold text-xl text-brandNavy mb-2">Mentoría 1 a 1</h3>
+                <p class="text-gray-600 text-sm">Sesiones privadas y personalizadas con mentores destacados del sector.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Respaldos y Alianzas -->
+    <section id="aliados" class="bg-gray-100 py-16 px-6 border-y border-gray-200">
+        <div class="max-w-6xl mx-auto text-center">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-8">En Alianza e Impulsado Por</h3>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12 bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                <div class="max-w-xs">
+                    <img src="IMG_8751.jpg" alt="Red Mundial de Jóvenes Políticos" class="h-20 object-contain mx-auto">
+                </div>
+                <div class="h-12 w-px bg-gray-300 hidden md:block"></div>
+                <div class="text-left max-w-lg">
+                    <h4 class="font-bold text-lg text-brandNavy">Iniciativa Conjunta con Impacto Social</h4>
+                    <p class="text-gray-600 text-sm mt-1">
+                        Este gran congreso es impulsado en conjunto con la <strong>Red Mundial de Jóvenes Políticos</strong> y el <strong>Gobierno de Saltillo, Coahuila</strong>, fortaleciendo el compromiso con las nuevas generaciones de empresarios de
+                        México.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registro y Pago -->
+    <section id="registro" class="py-20 px-6 max-w-2xl mx-auto">
+        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-xl border border-gray-100">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-brandNavy font-serif-title">Registro de Asistencia</h2>
+                <p class="text-gray-500 text-sm mt-1">Cuota de recuperación sin fines de lucro.</p>
+            </div>
+
+            <form onsubmit="procesarPago(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Nombre Completo</label>
+                    <input type="text" required placeholder="Ej. Juan Pérez" class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Correo Electrónico</label>
+                    <input type="email" required placeholder="tu@empresa.com" class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Perfil</label>
+                    <select class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
+                        <option>Joven Emprendedor / Estudiante</option>
+                        <option>Empresario / Fundador</option>
+                        <option>Consultor / Mentor</option>
+                    </select>
+                </div>
+
+                <div class="pt-6 border-t border-gray-100 mt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-gray-700">Acceso Completo:</span>
+                        <span class="text-2xl font-bold text-brandNavy">$350 MXN</span>
+                    </div>
+
+                    <!-- Simulación Pasarela Stripe -->
+                    <div class="p-4 border rounded bg-gray-50 mb-6 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-400 uppercase">Tarjeta de Débito/Crédito</span>
+                            <span class="text-xs text-brandNavy font-bold">Stripe Secure</span>
+                        </div>
+                        <input type="text" placeholder="4242 •••• •••• 4242" class="w-full px-3 py-2 border rounded text-sm bg-white outline-none">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="MM/AA" class="px-3 py-2 border rounded text-sm bg-white outline-none">
+                            <input type="text" placeholder="CVC" class="px-3 py-2 border rounded text-sm bg-white outline-none">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-pago" class="w-full bg-brandNavy text-white font-bold py-3.5 rounded shadow hover:bg-brandNavyDark transition flex justify-center items-center gap-2">
+                        <span>Pagar Registro</span>
+                    </button>
+                </div>
+            </form>
+
+            <div id="exito" class="hidden text-center mt-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
+                <p class="font-bold">¡Registro Exitoso!</p>
+                <p class="text-sm">Te hemos enviado el boleto de acceso a tu correo electrónico.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer con Derechos y Firma del CEO -->
+    <footer class="bg-brandNavyDark text-white py-12 px-6 border-t border-brandGold/30">
+        <div class="max-w-4xl mx-auto text-center space-y-6">
+            <img src="IMG_7661.PNG" alt="Summit Logo" class="h-12 mx-auto opacity-80">
+
+            <p class="text-xs text-gray-400 max-w-lg mx-auto">
+                ©️ 2026 SUMMIT EMPRESARIAL MÉXICO. Organización sin fines de lucro enfocada en el desarrollo de la nueva generación empresarial de Saltillo, Coahuila y todo México.
+            </p>
+
+            <!-- Firma del CEO -->
+            <div class="pt-4 border-t border-white/10 max-w-xs mx-auto">
+                <img src="WhatsApp Image 2026-09-03 at 10.15.51 AM.jpeg" alt="Firma CEO" class="h-16 mx-auto invert opacity-90 object-contain">
+                <p class="text-xs font-bold tracking-wider text-brandGold mt-2">
+                    CEO ANTONIO SAMAEL RINCÓN SANTIAGO SEGUNDO
+                </p>
+                <p class="text-[10px] text-gray-500 uppercase">Summit Empresarial México</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function procesarPago(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-pago');
+            const exito = document.getElementById('exito');
+
+            btn.disabled = true;
+            btn.innerHTML = 'Procesando...';
+
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                exito.classList.remove('hidden');
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>
