@@ -2,11 +2,12 @@
 
 include "conexion.php";
 
-if (!isset($_GET["codigo"])) {
-    die("Código de boleto no proporcionado.");
+if (!isset($_GET["codigo"]) || empty(trim($_GET["codigo"]))) {
+    header("Location: index.html");
+    exit;
 }
 
-$codigo = $_GET["codigo"];
+$codigo = trim($_GET["codigo"]);
 
 $sql = "SELECT * FROM boletos WHERE codigo_boleto = ?";
 $stmt = $conexion->prepare($sql);
@@ -16,7 +17,7 @@ $stmt->execute();
 $resultado = $stmt->get_result();
 
 if ($resultado->num_rows == 0) {
-    die("Boleto no encontrado.");
+    die("Boleto no encontrado. Por favor verifica tu código.");
 }
 
 $boleto = $resultado->fetch_assoc();
@@ -24,6 +25,11 @@ $boleto = $resultado->fetch_assoc();
 $stmt->close();
 $conexion->close();
 
+// Detección dinámica de la URL para el código QR
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$dir    = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+$url_validacion = $scheme . "://" . $host . $dir . "/validar_boleto.php?codigo=" . urlencode($boleto["codigo_boleto"]);
 ?>
 
 <!DOCTYPE html>
@@ -32,133 +38,157 @@ $conexion->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleto Digital - Summit Empresarial México</title>
 
-    <title>Boleto - Summit Empresarial México</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandNavy: '#0A1931',
+                        brandNavyDark: '#050C1A',
+                        brandGold: '#C5A059',
+                        brandGoldHover: '#B28E46',
+                    }
+                }
+            }
+        }
+    </script>
 
-    <!-- Librería para generar QR -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Librería QRCode.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
-        .boleto {
-            background: white;
-            width: 420px;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-            text-align: center;
+        .serif-title {
+            font-family: 'Playfair Display', serif;
         }
-
-        .titulo {
-            color: #0A1931;
-            font-size: 28px;
-            font-weight: bold;
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .ticket-card {
+                box-shadow: none !important;
+                border: 2px solid #C5A059 !important;
+                page-break-inside: avoid;
+            }
         }
-
-        .subtitulo {
-            color: #C5A059;
-            font-weight: bold;
-            margin-bottom: 25px;
-        }
-
-        .datos {
-            text-align: left;
-            margin-top: 20px;
-            line-height: 1.7;
-        }
-
-        .codigo {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #0A1931;
-        }
-
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin-top: 25px;
-        }
-
     </style>
-
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen py-10 px-4 flex flex-col justify-center items-center">
 
-    <div class="boleto">
+    <!-- Contenedor del Boleto -->
+    <div class="ticket-card bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
 
-        <div class="titulo">
-            SUMMIT EMPRESARIAL
+        <!-- Cabecera del Boleto -->
+        <div class="bg-brandNavy text-white p-6 text-center relative border-b-4 border-brandGold">
+            <div class="flex justify-center items-center gap-3 mb-2">
+                <img src="summit.PNG" alt="Logo" class="h-10 w-auto object-contain brightness-0 invert">
+            </div>
+            <h1 class="serif-title text-2xl font-bold tracking-wide">SUMMIT EMPRESARIAL</h1>
+            <p class="text-brandGold text-xs uppercase tracking-widest font-semibold mt-1">México · Acceso Oficial</p>
         </div>
 
-        <div class="subtitulo">
-            MÉXICO
+        <!-- Cuerpo del Boleto -->
+        <div class="p-6 space-y-5">
+
+            <!-- Estado y Tipo de Acceso -->
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <div>
+                    <span class="text-xs uppercase text-gray-400 font-bold block">Pase</span>
+                    <span class="font-bold text-brandNavy text-sm">Acceso Completo</span>
+                </div>
+                <div>
+                    <?php if ($boleto["usado"] == 1): ?>
+                        <span class="bg-gray-200 text-gray-700 text-xs font-bold px-3 py-1 rounded-full">UTILIZADO</span>
+                    <?php else: ?>
+                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">VÁLIDO</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Datos del Asistente -->
+            <div class="space-y-3 text-sm">
+                <div>
+                    <span class="text-xs uppercase text-gray-400 font-bold block">Asistente</span>
+                    <p class="text-base font-bold text-gray-900">
+                        <?php echo htmlspecialchars($boleto["nombre"] . " " . $boleto["apellido_paterno"] . " " . $boleto["apellido_materno"]); ?>
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="text-xs uppercase text-gray-400 font-bold block">Correo</span>
+                        <p class="text-gray-700 truncate" title="<?php echo htmlspecialchars($boleto["correo"]); ?>">
+                            <?php echo htmlspecialchars($boleto["correo"]); ?>
+                        </p>
+                    </div>
+                    <div>
+                        <span class="text-xs uppercase text-gray-400 font-bold block">Teléfono</span>
+                        <p class="text-gray-700">
+                            <?php echo htmlspecialchars($boleto["telefono"]); ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Código QR y Código Único -->
+            <div class="pt-4 border-t border-dashed border-gray-200 text-center">
+                <div id="qrcode" class="flex justify-center p-3 bg-white inline-block border-2 border-brandGold/40 rounded-2xl mx-auto shadow-sm"></div>
+
+                <p class="mt-3 font-mono font-bold text-brandNavy text-base tracking-widest">
+                    <?php echo htmlspecialchars($boleto["codigo_boleto"]); ?>
+                </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    Presenta este código QR en la entrada del evento.
+                </p>
+            </div>
+
         </div>
 
-        <h2>Acceso Completo</h2>
-
-        <div class="datos">
-
-            <p>
-                <strong>Nombre:</strong>
-                <?php echo htmlspecialchars($boleto["nombre"]); ?>
-            </p>
-
-            <p>
-                <strong>Apellidos:</strong>
-                <?php echo htmlspecialchars($boleto["apellido_paterno"]); ?>
-                <?php echo htmlspecialchars($boleto["apellido_materno"]); ?>
-            </p>
-
-            <p>
-                <strong>Correo:</strong>
-                <?php echo htmlspecialchars($boleto["correo"]); ?>
-            </p>
-
-            <p>
-                <strong>Teléfono:</strong>
-                <?php echo htmlspecialchars($boleto["telefono"]); ?>
-            </p>
-
+        <!-- Pie del Boleto -->
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+            <span>Total Pagado: <strong class="text-brandNavy">$<?php echo number_format($boleto["precio"], 2); ?> MXN</strong></span>
+            <span>Fecha: <strong><?php echo date("d/m/Y", strtotime($boleto["fecha_compra"])); ?></strong></span>
         </div>
-
-        <div class="codigo">
-            <?php echo htmlspecialchars($boleto["codigo_boleto"]); ?>
-        </div>
-
-        <div id="qrcode"></div>
-
-        <p>
-            Presenta este código QR para ingresar al evento.
-        </p>
 
     </div>
 
-    <?php
-    $url_validacion = "http://localhost/summit/validar_boleto.php?codigo="
-        . urlencode($boleto["codigo_boleto"]);
-    ?>
+    <!-- Botones de Acción (no se imprimen) -->
+    <div class="no-print mt-6 flex flex-wrap gap-4 justify-center">
+        <button onclick="window.print()" class="bg-brandGold hover:bg-brandGoldHover text-brandNavy font-bold px-6 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+            <span>🖨️ Imprimir / Guardar PDF</span>
+        </button>
+
+        <a href="index.html" class="bg-white hover:bg-gray-50 text-brandNavy font-bold px-6 py-2.5 rounded-xl shadow-md border border-gray-200 transition text-sm">
+            ← Regresar al inicio
+        </a>
+    </div>
 
     <script>
-
         new QRCode(document.getElementById("qrcode"), {
             text: "<?php echo htmlspecialchars($url_validacion, ENT_QUOTES); ?>",
-            width: 200,
-            height: 200
+            width: 180,
+            height: 180,
+            colorDark: "#0A1931",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
-
     </script>
 
 </body>
-
 </html>
