@@ -106,6 +106,13 @@ $url_validacion = $scheme . "://" . $host . $dir . "/validar_boleto.php?codigo="
         <!-- Cuerpo del Boleto -->
         <div class="p-6 space-y-5">
 
+            <?php if (isset($_GET["enviado"]) && $_GET["enviado"] == "1"): ?>
+                <div class="no-print bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold px-4 py-3 rounded-2xl flex items-center gap-2">
+                    <span class="text-base">✉️</span>
+                    <span>Copia digital enviada a: <strong><?php echo htmlspecialchars($boleto["correo"]); ?></strong></span>
+                </div>
+            <?php endif; ?>
+
             <!-- Estado y Tipo de Acceso -->
             <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
                 <div>
