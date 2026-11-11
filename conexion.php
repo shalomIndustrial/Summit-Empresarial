@@ -1,13 +1,20 @@
 <?php
 
-// Cargar variables de entorno desde .env si existe (entorno local)
+// Cargar variables de entorno desde .env de forma robusta
 if (file_exists(__DIR__ . '/.env')) {
-    $env = parse_ini_file(__DIR__ . '/.env');
-    if ($env !== false) {
-        foreach ($env as $key => $value) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#' || $line[0] === ';') {
+            continue;
+        }
+        if (strpos($line, '=') !== false) {
+            list($key, $val) = explode('=', $line, 2);
+            $key = trim($key);
+            $val = trim($val, " \t\n\r\0\x0B\"'");
             if (getenv($key) === false) {
-                putenv("$key=$value");
-                $_ENV[$key] = $value;
+                putenv("$key=$val");
+                $_ENV[$key] = $val;
             }
         }
     }
