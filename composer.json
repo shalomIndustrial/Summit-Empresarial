@@ -1,0 +1,8 @@
+{
+  "name": "summit/summit-empresarial",
+  "description": "Sistema de registro y boletos para Summit Empresarial México",
+  "type": "project",
+  "require": {
+    "php": ">=8.0"
+  }
+}
