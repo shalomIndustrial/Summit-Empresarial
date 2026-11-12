@@ -154,6 +154,36 @@ if (isset($_GET["action"]) && $_GET["action"] === "exportar") {
     exit;
 }
 
+// Reenviar boleto por correo electrónico desde el Panel de Administración
+$mensaje_reenvio = "";
+if (isset($_GET["action"]) && $_GET["action"] === "reenviar" && !empty($_GET["codigo"])) {
+    require_once "enviar_correo.php";
+    $codigo_reenvio = trim($_GET["codigo"]);
+
+    $stmt_r = $conexion->prepare("SELECT * FROM boletos WHERE codigo_boleto = ?");
+    $stmt_r->bind_param("s", $codigo_reenvio);
+    $stmt_r->execute();
+    $res_r = $stmt_r->get_result();
+
+    if ($b_data = $res_r->fetch_assoc()) {
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $dir    = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+        $url_boleto_reenvio = $scheme . "://" . $host . $dir . "/boleto.php?codigo=" . urlencode($b_data["codigo_boleto"]);
+        $nombre_comp = trim($b_data["nombre"] . " " . $b_data["apellido_paterno"] . " " . $b_data["apellido_materno"]);
+
+        $envio = enviarBoletoPorCorreo($b_data["correo"], $nombre_comp, $b_data["codigo_boleto"], $b_data["precio"], $url_boleto_reenvio);
+        if ($envio["success"]) {
+            $mensaje_reenvio = "Boleto reenviado con éxito a " . htmlspecialchars($b_data["correo"]);
+        } else {
+            $mensaje_reenvio = "Error al reenviar: " . htmlspecialchars($envio["message"]);
+        }
+    } else {
+        $mensaje_reenvio = "Boleto no encontrado para reenvío.";
+    }
+    $stmt_r->close();
+}
+
 // Búsqueda
 $busqueda = trim($_GET["q"] ?? "");
 
@@ -230,7 +260,17 @@ if (!empty($busqueda)) {
 
     <main class="max-w-7xl mx-auto px-6 py-8">
 
-        <!-- Métricas Principales -->
+        <?php if (!empty($mensaje_reenvio)): ?>
+            <div class="mb-6 p-4 rounded-2xl bg-brandNavy text-white border-2 border-brandGold flex items-center justify-between shadow-lg">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">✉️</span>
+                    <span class="text-sm font-semibold"><?php echo $mensaje_reenvio; ?></span>
+                </div>
+                <a href="admin.php" class="text-xs bg-brandGold text-brandNavy font-bold px-3 py-1 rounded-lg hover:bg-brandGoldHover transition">
+                    Cerrar aviso ✕
+                </a>
+            </div>
+        <?php endif; ?>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                 <span class="text-xs uppercase font-bold text-gray-400 block mb-1">Total Registrados</span>
@@ -339,6 +379,11 @@ if (!empty($busqueda)) {
                                         <a href="boleto.php?codigo=<?php echo urlencode($row["codigo_boleto"]); ?>" target="_blank"
                                            class="inline-block bg-brandGold/10 hover:bg-brandGold text-brandGold hover:text-brandNavy px-3 py-1.5 rounded-lg text-xs font-bold transition">
                                             Ver Boleto
+                                        </a>
+                                        <a href="admin.php?action=reenviar&codigo=<?php echo urlencode($row["codigo_boleto"]); ?>"
+                                           onclick="return confirm('¿Deseas reenviar el boleto a <?php echo htmlspecialchars($row['correo']); ?>?');"
+                                           class="inline-block bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                                            ✉️ Reenviar
                                         </a>
                                         <a href="validar_boleto.php?codigo=<?php echo urlencode($row["codigo_boleto"]); ?>" target="_blank"
                                            class="inline-block bg-gray-100 hover:bg-brandNavy text-gray-700 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">
