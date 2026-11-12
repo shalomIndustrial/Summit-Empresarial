@@ -64,6 +64,8 @@ $url_validacion = $scheme . "://" . $host . $dir . "/validar_boleto.php?codigo="
 
     <!-- Librería QRCode.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Librería html2pdf.js (Descarga directa de PDF de alta resolución) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         body {
@@ -92,7 +94,7 @@ $url_validacion = $scheme . "://" . $host . $dir . "/validar_boleto.php?codigo="
 <body class="bg-gray-100 min-h-screen py-10 px-4 flex flex-col justify-center items-center">
 
     <!-- Contenedor del Boleto -->
-    <div class="ticket-card bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+    <div id="boleto-card" class="ticket-card bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
 
         <!-- Cabecera del Boleto -->
         <div class="bg-brandNavy text-white p-6 text-center relative border-b-4 border-brandGold">
@@ -176,12 +178,18 @@ $url_validacion = $scheme . "://" . $host . $dir . "/validar_boleto.php?codigo="
     </div>
 
     <!-- Botones de Acción (no se imprimen) -->
-    <div class="no-print mt-6 flex flex-wrap gap-4 justify-center">
-        <button onclick="window.print()" class="bg-brandGold hover:bg-brandGoldHover text-brandNavy font-bold px-6 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
-            <span>🖨️ Imprimir / Guardar PDF</span>
+    <div class="no-print mt-6 flex flex-wrap gap-3 justify-center items-center">
+        <!-- Descargar PDF Directo -->
+        <button id="btn-descargar-pdf" onclick="descargarPDFDirecto()" class="bg-brandGold hover:bg-brandGoldHover text-brandNavy font-bold px-5 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-sm cursor-pointer">
+            <span>⬇️ Descargar Boleto PDF</span>
         </button>
 
-        <a href="index.html" class="bg-white hover:bg-gray-50 text-brandNavy font-bold px-6 py-2.5 rounded-xl shadow-md border border-gray-200 transition text-sm">
+        <!-- Imprimir -->
+        <button onclick="window.print()" class="bg-white hover:bg-gray-50 text-gray-700 font-semibold px-4 py-2.5 rounded-xl shadow-sm border border-gray-200 transition flex items-center gap-2 text-sm cursor-pointer">
+            <span>🖨️ Imprimir</span>
+        </button>
+
+        <a href="index.html" class="bg-white hover:bg-gray-50 text-brandNavy font-bold px-4 py-2.5 rounded-xl shadow-sm border border-gray-200 transition text-sm">
             ← Regresar al inicio
         </a>
     </div>
@@ -195,7 +203,39 @@ $url_validacion = $scheme . "://" . $host . $dir . "/validar_boleto.php?codigo="
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
-    </script>
 
+        // Función para descargar el boleto directamente en archivo PDF oficial
+        function descargarPDFDirecto() {
+            const btn = document.getElementById('btn-descargar-pdf');
+            const card = document.getElementById('boleto-card');
+            const codigo = "<?php echo htmlspecialchars($boleto['codigo_boleto'], ENT_QUOTES); ?>";
+
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<span>⏳ Generando PDF...</span>';
+            btn.disabled = true;
+
+            const opciones = {
+                margin:       [10, 10, 10, 10],
+                filename:     'Boleto_Summit_' + codigo + '.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opciones).from(card).save().then(() => {
+                btn.innerHTML = '<span>✓ ¡Descargado!</span>';
+                setTimeout(() => {
+                    btn.innerHTML = textoOriginal;
+                    btn.disabled = false;
+                }, 2500);
+            }).catch(err => {
+                console.error("Error al generar PDF:", err);
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+                // Si falla el renderizado en canvas del navegador, recurre al diálogo de impresión
+                window.print();
+            });
+        }
+    </script>
 </body>
 </html>

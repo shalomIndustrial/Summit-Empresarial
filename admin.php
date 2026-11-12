@@ -107,6 +107,53 @@ if (empty($_SESSION["admin_logged"])) {
 // A PARTIR DE AQUÍ SOLO ACCEDEN USUARIOS AUTENTICADOS
 // ==========================================
 
+// Exportación a Excel / CSV
+if (isset($_GET["action"]) && $_GET["action"] === "exportar") {
+    $filename = "asistentes_summit_empresarial_" . date("Ymd_His") . ".csv";
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '";');
+
+    // Salida directa a PHP output con BOM para que Excel abra acentos y ñ correctamente
+    $f = fopen('php://output', 'w');
+    fprintf($f, chr(0xEF).chr(0xBB).chr(0xBF));
+
+    // Encabezados de columnas
+    fputcsv($f, [
+        'ID',
+        'Código de Boleto',
+        'Nombre(s)',
+        'Apellido Paterno',
+        'Apellido Materno',
+        'Nombre Completo',
+        'Teléfono',
+        'Correo Electrónico',
+        'Precio (MXN)',
+        'Estado de Pago',
+        '¿Acceso Usado?',
+        'Fecha de Compra'
+    ]);
+
+    $export_query = $conexion->query("SELECT * FROM boletos ORDER BY id ASC");
+    while ($row = $export_query->fetch_assoc()) {
+        fputcsv($f, [
+            $row['id'],
+            $row['codigo_boleto'],
+            $row['nombre'],
+            $row['apellido_paterno'],
+            $row['apellido_materno'],
+            trim($row['nombre'] . ' ' . $row['apellido_paterno'] . ' ' . $row['apellido_materno']),
+            $row['telefono'],
+            $row['correo'],
+            number_format($row['precio'], 2, '.', ''),
+            $row['estado_pago'],
+            $row['usado'] == 1 ? 'SÍ (UTILIZADO)' : 'NO (DISPONIBLE)',
+            $row['fecha_compra']
+        ]);
+    }
+    fclose($f);
+    exit;
+}
+
 // Búsqueda
 $busqueda = trim($_GET["q"] ?? "");
 
@@ -215,19 +262,25 @@ if (!empty($busqueda)) {
             <div class="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <h2 class="text-lg font-bold text-brandNavy">Listado de Asistentes y Boletos</h2>
 
-                <form method="GET" class="flex gap-2 w-full sm:w-auto">
-                    <input type="text" name="q" value="<?php echo htmlspecialchars($busqueda); ?>"
-                           placeholder="Buscar por código, nombre o correo..."
-                           class="w-full sm:w-72 px-4 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-brandGold outline-none">
-                    <button type="submit" class="bg-brandNavy hover:bg-brandNavyDark text-white px-4 py-2 rounded-xl text-sm font-bold transition">
-                        Buscar
-                    </button>
-                    <?php if (!empty($busqueda)): ?>
-                        <a href="admin.php" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl text-sm transition flex items-center">
-                            ✕
-                        </a>
-                    <?php endif; ?>
-                </form>
+                <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                    <a href="admin.php?action=exportar" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-sm transition">
+                        <span>📊 Descargar Excel</span>
+                    </a>
+
+                    <form method="GET" class="flex gap-2 w-full sm:w-auto">
+                        <input type="text" name="q" value="<?php echo htmlspecialchars($busqueda); ?>"
+                               placeholder="Buscar por código, nombre o correo..."
+                               class="w-full sm:w-72 px-4 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-brandGold outline-none">
+                        <button type="submit" class="bg-brandNavy hover:bg-brandNavyDark text-white px-4 py-2 rounded-xl text-sm font-bold transition">
+                            Buscar
+                        </button>
+                        <?php if (!empty($busqueda)): ?>
+                            <a href="admin.php" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl text-sm transition flex items-center">
+                                ✕
+                            </a>
+                        <?php endif; ?>
+                    </form>
+                </div>
             </div>
 
             <div class="overflow-x-auto">
