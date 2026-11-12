@@ -1,6 +1,111 @@
 <?php
-
+session_start();
 require_once "conexion.php";
+
+$admin_user = getenv("ADMIN_USER") ?: "admin";
+$admin_pass = getenv("ADMIN_PASS") ?: "summit2026!";
+
+// Procesar cierre de sesión
+if (isset($_GET["action"]) && $_GET["action"] === "logout") {
+    unset($_SESSION["admin_logged"]);
+    session_destroy();
+    header("Location: admin.php");
+    exit;
+}
+
+// Procesar intento de login
+$login_error = "";
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login_admin"])) {
+    $user_input = trim($_POST["usuario"] ?? "");
+    $pass_input = trim($_POST["password"] ?? "");
+
+    if ($user_input === $admin_user && $pass_input === $admin_pass) {
+        $_SESSION["admin_logged"] = true;
+        header("Location: admin.php");
+        exit;
+    } else {
+        $login_error = "Usuario o contraseña incorrectos.";
+    }
+}
+
+// Si no está autenticado, mostrar formulario de inicio de sesión seguro
+if (empty($_SESSION["admin_logged"])) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Acceso Administrativo - Summit Empresarial</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            brandNavy: '#0A1931',
+                            brandNavyDark: '#050C1A',
+                            brandGold: '#C5A059',
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body class="bg-gradient-to-br from-brandNavyDark via-brandNavy to-slate-900 min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 border border-brandGold/30">
+            <div class="text-center mb-8">
+                <img src="summit.PNG" alt="Logo" class="h-14 mx-auto mb-3">
+                <h1 class="text-xl font-bold text-brandNavy">Panel Administrativo</h1>
+                <p class="text-xs text-gray-500 mt-1">Ingresa tus credenciales oficiales para continuar</p>
+            </div>
+
+            <?php if (!empty($login_error)): ?>
+                <div class="mb-5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span><?php echo htmlspecialchars($login_error); ?></span>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="admin.php" class="space-y-4">
+                <input type="hidden" name="login_admin" value="1">
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Usuario</label>
+                    <input type="text" name="usuario" required autofocus
+                        placeholder="admin"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brandGold outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Contraseña</label>
+                    <input type="password" name="password" required
+                        placeholder="••••••••"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brandGold outline-none text-sm">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-brandNavy hover:bg-brandNavyDark text-white font-bold py-3 rounded-xl shadow-lg transition mt-2 text-sm flex justify-center items-center gap-2">
+                    <span>Iniciar Sesión</span>
+                    <span>→</span>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-xs text-gray-400 hover:text-brandNavy transition">
+                    ← Volver al sitio web principal
+                </a>
+            </div>
+        </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
+// ==========================================
+// A PARTIR DE AQUÍ SOLO ACCEDEN USUARIOS AUTENTICADOS
+// ==========================================
 
 // Búsqueda
 $busqueda = trim($_GET["q"] ?? "");
@@ -25,7 +130,6 @@ if (!empty($busqueda)) {
 } else {
     $boletos = $conexion->query("SELECT * FROM boletos ORDER BY id DESC");
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -69,6 +173,9 @@ if (!empty($busqueda)) {
                 </span>
                 <a href="index.html" class="text-xs text-gray-300 hover:text-white underline">
                     Ver Sitio Web
+                </a>
+                <a href="admin.php?action=logout" class="bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white px-3 py-1 rounded-lg text-xs font-bold transition border border-red-500/30">
+                    Cerrar Sesión ✕
                 </a>
             </div>
         </div>

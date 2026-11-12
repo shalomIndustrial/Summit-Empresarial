@@ -1,11 +1,19 @@
 <?php
-
+session_start();
 include "conexion.php";
+
+$es_staff = !empty($_SESSION["admin_logged"]) || !empty($_SESSION["staff_authorized"]);
 
 $codigo = trim($_GET["codigo"] ?? "");
 
 if (empty($codigo)) {
     die("Código de boleto no proporcionado.");
+}
+
+// Si un usuario no autorizado intenta marcar el boleto, redirigirlo a validar_boleto para pedir PIN
+if (!$es_staff) {
+    header("Location: validar_boleto.php?codigo=" . urlencode($codigo));
+    exit;
 }
 
 $sql = "UPDATE boletos 

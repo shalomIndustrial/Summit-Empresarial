@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include "conexion.php";
 
 $codigo = trim($_GET["codigo"] ?? "");
@@ -19,6 +19,22 @@ $boleto = $encontrado ? $resultado->fetch_assoc() : null;
 
 $stmt->close();
 $conexion->close();
+
+// Verificar si el usuario actual es Staff autenticado (ya sea por admin o por PIN en sesión)
+$staff_pin_config = getenv("STAFF_PIN") ?: "2026";
+$es_staff = !empty($_SESSION["admin_logged"]) || !empty($_SESSION["staff_authorized"]);
+
+// Procesar ingreso de PIN si lo enviaron por POST
+$pin_error = "";
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["validar_pin"])) {
+    $pin_ingresado = trim($_POST["pin"] ?? "");
+    if ($pin_ingresado === $staff_pin_config) {
+        $_SESSION["staff_authorized"] = true;
+        $es_staff = true;
+    } else {
+        $pin_error = "PIN de Staff incorrecto. Acceso denegado.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -121,12 +137,38 @@ $conexion->close();
                         </div>
                     </div>
 
-                    <!-- Botón para Marcar como Usado -->
+                    <!-- Acción de Canje protegida con PIN de Staff -->
                     <div class="mt-6">
-                        <a href="marcar_usado.php?codigo=<?php echo urlencode($boleto["codigo_boleto"]); ?>"
-                           class="w-full inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition">
-                            Dar Acceso y Marcar como Usado
-                        </a>
+                        <?php if ($es_staff): ?>
+                            <a href="marcar_usado.php?codigo=<?php echo urlencode($boleto["codigo_boleto"]); ?>"
+                               class="w-full inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition">
+                                ✓ Dar Acceso y Marcar como Usado
+                            </a>
+                            <p class="text-[11px] text-gray-400 mt-2">Personal de Staff identificado correctamente</p>
+                        <?php else: ?>
+                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-left">
+                                <div class="flex items-center gap-2 mb-2 text-amber-800 font-bold text-xs uppercase">
+                                    <span>🔒</span>
+                                    <span>Confirmación exclusiva de Staff</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-3">
+                                    Para registrar el ingreso en la puerta, el organizador debe ingresar el PIN de Staff:
+                                </p>
+
+                                <?php if (!empty($pin_error)): ?>
+                                    <p class="text-xs text-red-600 font-semibold mb-2"><?php echo htmlspecialchars($pin_error); ?></p>
+                                <?php endif; ?>
+
+                                <form method="POST" action="validar_boleto.php?codigo=<?php echo urlencode($codigo); ?>" class="flex gap-2">
+                                    <input type="hidden" name="validar_pin" value="1">
+                                    <input type="password" name="pin" required maxlength="8" placeholder="PIN de Staff"
+                                           class="w-full px-3 py-2 border rounded-xl text-center font-mono tracking-widest text-sm focus:ring-2 focus:ring-brandGold outline-none">
+                                    <button type="submit" class="bg-brandNavy hover:bg-brandNavyDark text-white px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">
+                                        Desbloquear
+                                    </button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
