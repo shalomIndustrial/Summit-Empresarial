@@ -104,19 +104,25 @@
         <label class="block text-xs font-bold uppercase text-gray-600 mb-1">
             Nombre(s)
         </label>
-        <input type="text" name="nombre" required
-            placeholder="Ej. Juan Arnol"
+        <input type="text" name="nombre" id="nombre" required
+            maxlength="27"
+            placeholder="Ej. Juan Carlos"
+            pattern="^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$"
+            title="Solo letras. Cada nombre debe iniciar con mayúscula seguida de minúsculas, sin números ni símbolos (máximo 27 caracteres)."
             class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
         <div>
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">
                 Apellido Paterno
             </label>
-            <input type="text" name="apellido_paterno" required
+            <input type="text" name="apellido_paterno" id="apellido_paterno" required
+                maxlength="30"
                 placeholder="Ej. Gonzalez"
+                pattern="^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$"
+                title="Solo letras. Primera letra en mayúscula seguida de minúsculas, sin números ni símbolos (máximo 30 caracteres)."
                 class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
         </div>
 
@@ -124,8 +130,11 @@
             <label class="block text-xs font-bold uppercase text-gray-600 mb-1">
                 Apellido Materno
             </label>
-            <input type="text" name="apellido_materno" required
-                placeholder="Ej. Pérez"
+            <input type="text" name="apellido_materno" id="apellido_materno" required
+                maxlength="30"
+                placeholder="Ej. Perez"
+                pattern="^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$"
+                title="Solo letras. Primera letra en mayúscula seguida de minúsculas, sin números ni símbolos (máximo 30 caracteres)."
                 class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
         </div>
 
@@ -135,7 +144,9 @@
         <label class="block text-xs font-bold uppercase text-gray-600 mb-1">
             Correo Electrónico
         </label>
-        <input type="email" name="correo" required
+        <input type="email" name="correo" id="correo" required
+            pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+            title="Ingresa un correo electrónico válido con formato nombre@dominio.com"
             placeholder="tu@empresa.com"
             class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
     </div>
@@ -144,7 +155,8 @@
         <label class="block text-xs font-bold uppercase text-gray-600 mb-1">
             Número de teléfono
         </label>
-        <input type="tel" name="telefono" required
+        <input type="tel" name="telefono" id="telefono" required
+            maxlength="15"
             placeholder="55 1234 5678"
             class="w-full px-4 py-2.5 border rounded focus:ring-2 focus:ring-brandGold outline-none">
     </div>
@@ -230,19 +242,38 @@
     </footer>
 
     <script>
-        function procesarPago(e) {
-            e.preventDefault();
-            const form = document.getElementById('form-pago');
-            const btn = document.getElementById('btn-pago');
-            const exito = document.getElementById('exito');
+        // Función para limpiar caracteres no permitidos (números, símbolos) y capitalizar (Primera mayúscula, resto minúsculas)
+        function formatearNombre(input, maxLen) {
+            // Filtrar solo letras (incluye acentos y ñ) y espacios
+            let valor = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
 
-            btn.disabled = true;
-            btn.innerHTML = 'Procesando...';
+            // Limitar longitud
+            if (valor.length > maxLen) {
+                valor = valor.substring(0, maxLen);
+            }
 
-            setTimeout(() => {
-                form.classList.add('hidden');
-                exito.classList.remove('hidden');
-            }, 1500);
+            // Formatear cada palabra: 1 mayúscula inicial y el resto minúsculas
+            let palabras = valor.split(' ');
+            let formateadas = palabras.map(p => {
+                if (p.length === 0) return '';
+                return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+            });
+
+            input.value = formateadas.join(' ');
+        }
+
+        const inputNombre = document.getElementById('nombre');
+        const inputPaterno = document.getElementById('apellido_paterno');
+        const inputMaterno = document.getElementById('apellido_materno');
+
+        if (inputNombre) {
+            inputNombre.addEventListener('input', () => formatearNombre(inputNombre, 27));
+        }
+        if (inputPaterno) {
+            inputPaterno.addEventListener('input', () => formatearNombre(inputPaterno, 30));
+        }
+        if (inputMaterno) {
+            inputMaterno.addEventListener('input', () => formatearNombre(inputMaterno, 30));
         }
     </script>
 </body>

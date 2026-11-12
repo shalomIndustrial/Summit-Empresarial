@@ -14,8 +14,33 @@ $apellido_materno = trim($_POST["apellido_materno"] ?? "");
 $correo           = trim($_POST["correo"] ?? "");
 $telefono         = trim($_POST["telefono"] ?? "");
 
-if (empty($nombre) || empty($apellido_paterno) || empty($correo) || empty($telefono)) {
-    die("Por favor completa todos los campos requeridos. <a href='menu.html'>Regresar</a>");
+// Función para formatear y validar nombres (primera mayúscula, resto minúsculas, solo letras)
+function limpiarYFormatearTexto($texto, $max) {
+    // Quitar cualquier carácter que no sea letra o espacio
+    $limpio = preg_replace('/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/u', '', $texto);
+    if (mb_strlen($limpio) > $max) {
+        $limpio = mb_substr($limpio, 0, $max);
+    }
+    $palabras = preg_split('/\s+/u', trim($limpio));
+    $formateadas = array_map(function($p) {
+        if (empty($p)) return '';
+        $primera = mb_strtoupper(mb_substr($p, 0, 1));
+        $resto = mb_strtolower(mb_substr($p, 1));
+        return $primera . $resto;
+    }, $palabras);
+    return implode(' ', $formateadas);
+}
+
+$nombre           = limpiarYFormatearTexto($nombre, 27);
+$apellido_paterno = limpiarYFormatearTexto($apellido_paterno, 30);
+$apellido_materno = limpiarYFormatearTexto($apellido_materno, 30);
+
+if (empty($nombre) || empty($apellido_paterno)) {
+    die("El nombre y apellido paterno solo deben contener letras válidas. <a href='menu.html'>Regresar</a>");
+}
+
+if (!filter_var($correo, FILTER_VALIDATE_EMAIL) || strpos($correo, '@') === false) {
+    die("El correo electrónico ingresado no es válido. Debe contener @ y un dominio válido. <a href='menu.html'>Regresar</a>");
 }
 
 // Generación de código único de boleto
