@@ -181,8 +181,8 @@
         </label>
         <input type="tel" name="telefono" id="telefono" required
             maxlength="20"
-            placeholder="55 1234 5678"
-            title="Campo obligatorio. Ingresa tu número de teléfono."
+            placeholder="844 499 3690"
+            title="Campo obligatorio. Ingresa tu número de teléfono (10 dígitos)."
             class="w-full px-4 py-2.5 border border-gray-300 rounded focus:ring-2 focus:ring-brandGold outline-none">
     </div>
 
@@ -316,9 +316,26 @@
                 utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
             });
 
-            // Permitir solo números y espacios al escribir en el teléfono
+            // Formatear en tiempo real en bloques de 3, 3 y 4 (ejemplo: 844 499 3690)
             phoneInput.addEventListener("input", function() {
-                this.value = this.value.replace(/[^0-9\s]/g, '');
+                // Obtener solo dígitos
+                let digits = this.value.replace(/\D/g, '');
+                // Máximo 10 dígitos locales estándar
+                if (digits.length > 10) {
+                    digits = digits.substring(0, 10);
+                }
+
+                // Agrupar en formato 3 3 4
+                let formatted = '';
+                if (digits.length > 6) {
+                    formatted = digits.substring(0, 3) + ' ' + digits.substring(3, 6) + ' ' + digits.substring(6);
+                } else if (digits.length > 3) {
+                    formatted = digits.substring(0, 3) + ' ' + digits.substring(3);
+                } else {
+                    formatted = digits;
+                }
+
+                this.value = formatted;
             });
 
             // Validar que todos los campos obligatorios estén llenos antes de enviar
@@ -331,22 +348,26 @@
                     }
 
                     // Validar que el teléfono no esté vacío
-                    if (phoneInput.value.trim() === '') {
+                    const soloDigitos = phoneInput.value.replace(/\D/g, '');
+                    if (soloDigitos === '') {
                         e.preventDefault();
                         phoneInput.focus();
                         alert("Por favor ingresa tu número de teléfono.");
                         return false;
                     }
 
-                    const numeroCompleto = iti.getNumber();
-                    if (numeroCompleto) {
-                        phoneInput.value = numeroCompleto;
-                    } else {
-                        const dialCode = iti.getSelectedCountryData().dialCode;
-                        if (dialCode && !phoneInput.value.startsWith('+')) {
-                            phoneInput.value = '+' + dialCode + ' ' + phoneInput.value.trim();
-                        }
+                    // Obtener la lada internacional del país seleccionado (ej: 52 para México)
+                    const countryData = iti.getSelectedCountryData();
+                    const dialCode = countryData && countryData.dialCode ? countryData.dialCode : "52";
+
+                    // Formatear el número local en bloques: 3 3 4
+                    let parteLocal = phoneInput.value.trim();
+                    if (soloDigitos.length === 10) {
+                        parteLocal = soloDigitos.substring(0, 3) + ' ' + soloDigitos.substring(3, 6) + ' ' + soloDigitos.substring(6);
                     }
+
+                    // Guardar con formato: +52 844 499 3690
+                    phoneInput.value = '+' + dialCode + ' ' + parteLocal;
                 });
             }
         }

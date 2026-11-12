@@ -39,6 +39,16 @@ if (empty($nombre) || empty($apellido_paterno) || empty($apellido_materno) || em
     die("Todos los datos del asistente son obligatorios (Nombre, Apellidos, Teléfono). <a href='menu.html'>Regresar</a>");
 }
 
+// Asegurar formato telefónico con lada y espacios 3-3-4
+if (preg_match('/^(\+\d{1,4})\s*(\d{3})\s*(\d{3})\s*(\d{4})$/', $telefono, $m)) {
+    $telefono = "{$m[1]} {$m[2]} {$m[3]} {$m[4]}";
+} elseif (preg_match('/^\+?\d+$/', preg_replace('/\s+/', '', $telefono))) {
+    $digitos = preg_replace('/\D/', '', $telefono);
+    if (strlen($digitos) == 10) {
+        $telefono = "+52 " . substr($digitos, 0, 3) . " " . substr($digitos, 3, 3) . " " . substr($digitos, 6);
+    }
+}
+
 if (!filter_var($correo, FILTER_VALIDATE_EMAIL) || strpos($correo, '@') === false) {
     die("El correo electrónico es obligatorio y debe tener un formato válido (@). <a href='menu.html'>Regresar</a>");
 }
