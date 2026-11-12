@@ -244,7 +244,10 @@ if (!empty($busqueda)) {
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                <a href="escanear.php" class="inline-flex items-center gap-1.5 bg-brandGold hover:bg-brandGoldHover text-brandNavy font-bold px-3.5 py-1.5 rounded-xl text-xs shadow-md transition">
+                    <span>📷 Escáner QR Puerta</span>
+                </a>
+                <span class="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     Railway Online
                 </span>
