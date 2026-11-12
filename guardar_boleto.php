@@ -35,12 +35,12 @@ $nombre           = limpiarYFormatearTexto($nombre, 27);
 $apellido_paterno = limpiarYFormatearTexto($apellido_paterno, 30);
 $apellido_materno = limpiarYFormatearTexto($apellido_materno, 30);
 
-if (empty($nombre) || empty($apellido_paterno)) {
-    die("El nombre y apellido paterno solo deben contener letras válidas. <a href='menu.html'>Regresar</a>");
+if (empty($nombre) || empty($apellido_paterno) || empty($apellido_materno) || empty($telefono)) {
+    die("Todos los datos del asistente son obligatorios (Nombre, Apellidos, Teléfono). <a href='menu.html'>Regresar</a>");
 }
 
 if (!filter_var($correo, FILTER_VALIDATE_EMAIL) || strpos($correo, '@') === false) {
-    die("El correo electrónico ingresado no es válido. Debe contener @ y un dominio válido. <a href='menu.html'>Regresar</a>");
+    die("El correo electrónico es obligatorio y debe tener un formato válido (@). <a href='menu.html'>Regresar</a>");
 }
 
 // Generación de código único de boleto
